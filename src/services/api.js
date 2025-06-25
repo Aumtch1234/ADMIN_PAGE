@@ -26,6 +26,11 @@ export const addAdmin = (data, token) =>
     headers: { Authorization: `Bearer ${token}` },
   });
 
+export const configAdmin = (data, token) =>
+  API.post('/config-admin', data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
 // ✅ แก้เป็น GET '/admins/pending'
 export const getVerifyList = (token) =>
   API.get('/admins/pending', {

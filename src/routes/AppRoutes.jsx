@@ -4,8 +4,9 @@ import AddAdminPage from '../pages/AddAdminPage';
 import DashboardPage from '../pages/DashboardPage';
 import PendingAdminPage from '../pages/PendingAdminPage'; // ✅ เพิ่ม
 import ProtectedRoute from '../components/ProtectedRoute';
-import PostfoodPage from '../pages/PostfoodPage';
+import PostfoodPage from '../pages/ConfigAdminPage';
 import FoodListPage from '../pages/FoodePage';
+import ConfigAdminPage from '../pages/ConfigAdminPage';
 
 export default function AppRoutes() {
   const token = localStorage.getItem('token');
@@ -16,6 +17,13 @@ export default function AppRoutes() {
         <Route
           path="/login"
           element={token ? <Navigate to="/dashboard" /> : <LoginPage />}
+        />
+
+        <Route
+          path="/config-admin"
+          element={
+              <ConfigAdminPage />
+          }
         />
 
         <Route
@@ -42,15 +50,6 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={['m_admin']}>
               <PendingAdminPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/postfood"
-          element={
-            <ProtectedRoute>
-              <PostfoodPage />
             </ProtectedRoute>
           }
         />
