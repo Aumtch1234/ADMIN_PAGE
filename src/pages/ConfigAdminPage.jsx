@@ -28,7 +28,7 @@ export default function ConfigAdminPage() {
     <div className="flex flex-col h-screen">
       <div className="flex items-center justify-center h-screen bg-gray-50">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow w-80">
-        <h2 className="text-xl font-bold mb-4">Add Admin</h2>
+        <h2 className="text-xl font-bold mb-4 text-center text-red-600">Config ADD Admin</h2>
         <input
           type="username"
           placeholder="username"
@@ -43,8 +43,8 @@ export default function ConfigAdminPage() {
         />
         {message && <p className="text-green-600">{message}</p>}
         <button type="submit" className="bg-green-600 text-white w-full p-2 rounded">
-          Add Admin
-        </button>
+          ADD ADDMIN
+        </button><br /><br />
         <a href="/login" className='text-blue-500'>Back to login</a>
       </form>
 

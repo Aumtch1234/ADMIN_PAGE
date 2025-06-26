@@ -7,6 +7,7 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import PostfoodPage from '../pages/ConfigAdminPage';
 import FoodListPage from '../pages/FoodePage';
 import ConfigAdminPage from '../pages/ConfigAdminPage';
+import UserListPage from '../pages/UsersVerifyPage';
 
 export default function AppRoutes() {
   const token = localStorage.getItem('token');
@@ -59,6 +60,15 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute>
               <FoodListPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute allowedRoles={['m_admin', 'admin']}>
+              <UserListPage />
             </ProtectedRoute>
           }
         />

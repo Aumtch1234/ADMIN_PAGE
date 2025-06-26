@@ -44,27 +44,24 @@ export default function PendingAdminPage() {
     const token = localStorage.getItem('token');
 
     const updates = admins.filter((admin) =>
-      selectedRoles[admin.id] !== undefined || selectedVerify[admin.id] !== undefined
+      selectedRoles[admin.id] !== undefined
     );
 
     try {
       for (const admin of updates) {
         const id = admin.id;
         const chosenRole = selectedRoles[id] ?? admin.role;
-        const verifyStatus = selectedVerify[id] ?? admin.verify;
 
-        await verifyAdmin(id, token, chosenRole, verifyStatus);
+        await verifyAdmin(id, token, chosenRole);
       }
 
-      // อัปเดตหน้าจอ
       setAdmins((prev) =>
         prev.map((admin) => {
           const id = admin.id;
-          if (selectedRoles[id] !== undefined || selectedVerify[id] !== undefined) {
+          if (selectedRoles[id] !== undefined) {
             return {
               ...admin,
-              role: selectedRoles[id] ?? admin.role,
-              verify: selectedVerify[id] ?? admin.verify,
+              role: selectedRoles[id],
             };
           }
           return admin;
@@ -72,12 +69,12 @@ export default function PendingAdminPage() {
       );
 
       setSelectedRoles({});
-      setSelectedVerify({});
       alert('ยืนยันเรียบร้อยแล้ว');
     } catch (err) {
       alert('เกิดข้อผิดพลาดระหว่างการยืนยัน');
     }
   };
+
 
   return (
     <>
@@ -108,18 +105,6 @@ export default function PendingAdminPage() {
                       <option value="user">User</option>
                     </select>
 
-                    <select
-                      className="border rounded px-3 py-1"
-                      value={
-                        selectedVerify[admin.id] !== undefined
-                          ? selectedVerify[admin.id].toString()
-                          : admin.verify.toString()
-                      }
-                      onChange={(e) => handleVerifyChange(admin.id, e.target.value)}
-                    >
-                      <option value="true">✅ Verified</option>
-                      <option value="false">❌ Not Verified</option>
-                    </select>
                   </div>
                 )}
               </li>

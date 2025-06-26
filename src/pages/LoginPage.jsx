@@ -1,43 +1,46 @@
 import { useState } from 'react';
 import { login } from '../services/api';
-import { jwtDecode } from 'jwt-decode'; // ✅ FIXED: ใช้ named import
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setMessage('');
 
     try {
-      // 🔴 คุณลืมเรียก login(form)
       const res = await login(form);
       const { token } = res.data;
 
-      localStorage.setItem('token', token); // 🔑 เก็บ token ไว้ใช้ต่อ
+      localStorage.setItem('token', token);
 
       const decoded = jwtDecode(token);
-      const usernameFromToken = decoded.username;
+      const { role } = decoded;
 
-      // ✅ ตรวจชื่อแล้วไปตามสิทธิ
-      if (usernameFromToken === 'H_ADMIN') {
-        window.location.href = '/dashboard';
+      if (role === 'admin' || role === 'm_admin') {
+        navigate('/dashboard');
       } else {
-        window.location.href = '/login';
-        setMessage('ยังไม่สามารถเข้าสู่ระบบได้');
-
+        // ✅ ไม่ redirect ก่อน ให้ตั้งข้อความเตือนก่อน
+        setMessage('คุณยังไม่มีสิทธิ์เข้าถึง');
       }
     } catch (err) {
-      setError('Login failed');
+      // ✅ อ่าน message จาก response API
+      const msg = err.response?.data?.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ';
+      setError(msg); // ✅ ตั้ง error ที่จะแสดงใน UI
     }
   };
-
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow w-80">
         <h1 className="text-xl font-bold mb-4 text-amber-700 text-center">Login</h1>
+
         <input
           placeholder="username"
           className="w-full border p-2 mb-3 rounded"
@@ -53,11 +56,14 @@ export default function LoginPage() {
           onChange={(e) => setForm({ ...form, password: e.target.value })}
           required
         />
-        {error && <p className="text-red-500">{error}</p>}
-        <button type="submit" className="bg-blue-600 text-white w-full p-2 rounded">
-          Login
-        </button><br /><br />
 
+        {/* ✅ แสดงข้อความผิดพลาด */}
+        {error && <p className="text-red-600 text-sm">{error}</p>}
+        {message && <p className="text-red-600 text-sm">{message}</p>}
+
+        <button type="submit" className="bg-blue-600 text-white w-full p-2 rounded mt-3">
+          Login
+        </button>
       </form>
     </div>
   );

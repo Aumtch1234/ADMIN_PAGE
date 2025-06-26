@@ -24,6 +24,8 @@ export default function Navbar() {
             <div className="space-x-4">
                 <Link to="/dashboard">Dashboard</Link>
                 <Link to="/foods">FOODS</Link>
+                <Link to="/users">USERS</Link>
+            
                 {role === 'm_admin' && (
                     <>
                         <Link to="/pending-admin">Pending Admin</Link>

@@ -38,15 +38,12 @@ export const getVerifyList = (token) =>
   });
 
 // ✅ เพิ่มฟังก์ชันสำหรับกดยืนยัน admin
-export const verifyAdmin = (id, token, role, verify) => {
-  const body = {};
-  if (role !== undefined) body.role = role;
-  if (verify !== undefined) body.verify = verify;
-
-  return API.patch(`/admins/verify/${id}`, body, {
+export const verifyAdmin = (id, token, role) => {
+  return API.patch(`/admins/verify/${id}`, { role }, {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
+
 
 export const getAllAdmins = (token) =>
   API.get('/admins/all', {
@@ -75,4 +72,9 @@ export const deleteFood = (id, token) =>
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
+  });
+
+export const GetUsers = (token) =>
+  API.get('/users', {
+    headers: { Authorization: `Bearer ${token}` },
   });
