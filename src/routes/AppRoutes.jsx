@@ -8,6 +8,7 @@ import PostfoodPage from '../pages/ConfigAdminPage';
 import FoodListPage from '../pages/FoodePage';
 import ConfigAdminPage from '../pages/ConfigAdminPage';
 import UserListPage from '../pages/UsersVerifyPage';
+import ApprovePage from '../pages/ApprovePage';
 
 export default function AppRoutes() {
   const token = localStorage.getItem('token');
@@ -69,6 +70,14 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={['m_admin', 'admin']}>
               <UserListPage />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/approve"
+          element={
+            <ProtectedRoute allowedRoles={['m_admin', 'admin']}>
+              <ApprovePage />
             </ProtectedRoute>
           }
         />

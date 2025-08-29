@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { addAdmin } from '../services/api';
+import { addAdmin } from '../APIs/API';
 import { Navigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { GetUsers } from '../services/api';
+import { GetUsers } from '../APIs/API';
 import Navbar from '../components/Navbar';
 
 export default function UserListPage() {
@@ -49,7 +49,7 @@ export default function UserListPage() {
     {
       name: 'เพศ',
       selector: (row) =>
-        row.gender === 1 ? 'ชาย' : row.gender === 2 ? 'หญิง' : 'ไม่ระบุ',
+        row.gender === 0 ? 'ชาย' : row.gender === 1 ? 'หญิง' : 'ไม่ระบุ',
     },
     {
       name: 'วันเกิด',

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { getVerifyList, verifyAdmin } from '../services/api';
+import { getVerifyList, verifyAdmin } from '../APIs/API';
 import Navbar from '../components/Navbar';
 
 export default function PendingAdminPage() {

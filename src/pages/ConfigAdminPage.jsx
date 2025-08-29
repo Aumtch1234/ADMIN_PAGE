@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { configAdmin } from '../services/api';
+import { configAdmin } from '../APIs/API';
 import { Navigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 

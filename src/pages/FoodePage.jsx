@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
-import { getFoods, postFood, deleteFood, updateFood } from '../services/api';
+import { getFoods, postFood, deleteFood, updateFood } from '../APIs/API';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
