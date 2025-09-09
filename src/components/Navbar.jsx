@@ -10,7 +10,7 @@ export default function Navbar() {
             const decoded = jwtDecode(token);
             role = decoded.role;
         } catch (err) {
-            console.error('Invalid token');
+            console.error('Invalid token', err);
         }
     }
 
@@ -25,6 +25,7 @@ export default function Navbar() {
                 <Link to="/dashboard">Dashboard</Link>
                 <Link to="/foods">FOODS</Link>
                 <Link to="/users">USERS</Link>
+                <Link to="/riders">RIDERS</Link>
                 <Link to="/approve">Approve</Link>
             
                 {role === 'm_admin' && (

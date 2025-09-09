@@ -9,6 +9,8 @@ import FoodListPage from '../pages/FoodePage';
 import ConfigAdminPage from '../pages/ConfigAdminPage';
 import UserListPage from '../pages/UsersVerifyPage';
 import ApprovePage from '../pages/ApprovePage';
+import ManageRider from '../pages/ManageRier/ManageRider';
+import RiderDetails from '../pages/ManageRier/RiderDetails';
 
 export default function AppRoutes() {
   const token = localStorage.getItem('token');
@@ -81,6 +83,25 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        
+        <Route
+          path="/riders"
+          element={
+            <ProtectedRoute allowedRoles={['m_admin', 'admin']}>
+              <ManageRider />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/riders/:riderId"
+          element={
+            <ProtectedRoute allowedRoles={['m_admin', 'admin']}>
+              <RiderDetails />
+            </ProtectedRoute>
+          }
+        />
+        
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>

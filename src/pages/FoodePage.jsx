@@ -113,6 +113,7 @@ export default function FoodListPage() {
             fetchFoods();
         } catch (err) {
             alert('ลบเมนูไม่สำเร็จ');
+            console.error(err);
         }
     };
 
