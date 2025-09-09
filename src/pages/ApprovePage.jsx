@@ -35,7 +35,7 @@ export default function StoreApprovalPage() {
       store.shop_name?.toLowerCase().includes(search) ||
       store.owner_name?.toLowerCase().includes(search) ||
       store.address?.toLowerCase().includes(search);
-    
+
     const matchesStatus =
       statusFilter === 'all' ||
       (statusFilter === 'pending' && store.approve === false) ||
@@ -50,12 +50,12 @@ export default function StoreApprovalPage() {
       const token = localStorage.getItem('token');
       const response = await approveStore(marketId, token);
       console.log('Approve response:', response.data);
-      
+
       // อัปเดต state ด้วยข้อมูลที่ได้จาก API response
-      setStores(stores.map(s => 
+      setStores(stores.map(s =>
         s.market_id === marketId ? { ...s, approve: true } : s
       ));
-      
+
       // แสดงข้อความสำเร็จ
       alert('อนุมัติร้านค้าเรียบร้อยแล้ว');
     } catch (err) {
@@ -69,12 +69,12 @@ export default function StoreApprovalPage() {
       const token = localStorage.getItem('token');
       const response = await rejectStore(marketId, token);
       console.log('Reject response:', response.data);
-      
+
       // อัปเดต state ด้วยข้อมูลจาก API response
-      setStores(stores.map(s => 
+      setStores(stores.map(s =>
         s.market_id === marketId ? { ...s, approve: false } : s
       ));
-      
+
       // แสดงข้อความสำเร็จ
       alert('ปฏิเสธร้านค้าเรียบร้อยแล้ว');
     } catch (err) {

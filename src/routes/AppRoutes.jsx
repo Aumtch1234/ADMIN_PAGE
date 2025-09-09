@@ -4,13 +4,15 @@ import AddAdminPage from '../pages/AddAdminPage';
 import DashboardPage from '../pages/DashboardPage';
 import PendingAdminPage from '../pages/PendingAdminPage'; // ✅ เพิ่ม
 import ProtectedRoute from '../components/ProtectedRoute';
-import PostfoodPage from '../pages/ConfigAdminPage';
-import FoodListPage from '../pages/FoodePage';
+import StoreListPage from '../pages/admin_mrkets/StoreListPage';
 import ConfigAdminPage from '../pages/ConfigAdminPage';
 import UserListPage from '../pages/UsersVerifyPage';
 import ApprovePage from '../pages/ApprovePage';
 import ManageRider from '../pages/ManageRier/ManageRider';
 import RiderDetails from '../pages/ManageRier/RiderDetails';
+import AddMarketPage from '../pages/admin_mrkets/AddMarketPage';
+import AddCategoryPage from '../pages/admin_mrkets/AddCategory';
+import StoreDetailPage from '../pages/admin_mrkets/StoreDetailPage';
 
 export default function AppRoutes() {
   const token = localStorage.getItem('token');
@@ -26,7 +28,7 @@ export default function AppRoutes() {
         <Route
           path="/config-admin"
           element={
-              <ConfigAdminPage />
+            <ConfigAdminPage />
           }
         />
 
@@ -62,7 +64,34 @@ export default function AppRoutes() {
           path="/foods"
           element={
             <ProtectedRoute>
-              <FoodListPage />
+              <StoreListPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/add-category"
+          element={
+            <ProtectedRoute>
+              <AddCategoryPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/add-market"
+          element={
+            <ProtectedRoute>
+              <AddMarketPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/store/:marketId"
+          element={
+            <ProtectedRoute>
+              <StoreDetailPage />
             </ProtectedRoute>
           }
         />
@@ -75,7 +104,7 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/approve"
           element={
             <ProtectedRoute allowedRoles={['m_admin', 'admin']}>

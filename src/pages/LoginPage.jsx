@@ -1,70 +1,144 @@
 import { useState } from 'react';
-import { login } from '../APIs/API';
-import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import { login } from '../APIs/API'; // ตรวจเส้นทางให้ตรงโปรเจ็กต์
+import { FaUser, FaLock, FaSignInAlt } from 'react-icons/fa';
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  // ✅ helper ปลอดภัย: decode แล้วกัน error + ตรวจ exp
+  const safeDecode = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      // exp เป็นวินาที (Unix time)
+      if (decoded?.exp && Date.now() >= decoded.exp * 1000) {
+        throw new Error('Token expired');
+      }
+      return decoded || {};
+    } catch (e) {
+      console.error('JWT decode error:', e);
+      return null;
+    }
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
     setMessage('');
+    setLoading(true);
 
     try {
-      const res = await login(form);
-      const { token } = res.data;
+      const { data } = await login(form);
+      const { token } = data || {};
 
+      if (!token) {
+        throw new Error('ไม่พบโทเค็นจากเซิร์ฟเวอร์');
+      }
+
+      // ✅ decode payload
+      const payload = safeDecode(token);
+      if (!payload) {
+        throw new Error('โทเค็นไม่ถูกต้อง หรือหมดอายุ');
+      }
+
+      // ตัวอย่างคีย์ที่คาดหวังใน payload: role, is_admin, admin_id, userId/email ฯลฯ
+      const role = payload.role || (payload.is_admin ? 'admin' : 'user');
+      const isAdmin = !!payload.is_admin;
+      const adminId = payload.admin_id ?? payload.userId ?? payload.id;
+
+      // ✅ เก็บ token + payload ไว้ใช้งาน
       localStorage.setItem('token', token);
+      localStorage.setItem('user_payload', JSON.stringify({
+        role,
+        is_admin: isAdmin,
+        admin_id: adminId,
+        email: payload.email,
+        username: payload.username,
+        iat: payload.iat,
+        exp: payload.exp,
+      }));
 
-      const decoded = jwtDecode(token);
-      const { role } = decoded;
-
-      if (role === 'admin' || role === 'm_admin') {
-        navigate('/dashboard');
+      // ✅ นำทางตามสิทธิ์ (รองรับทั้ง role และ is_admin)
+      const isRoleAdmin = role === 'admin' || role === 'm_admin';
+      if (isRoleAdmin || isAdmin) {
+        // ไปแดชบอร์ด/เพจแอดมินที่ต้องการ
+        navigate('/dashboard'); // หรือ '/admin/stores'
       } else {
-        // ✅ ไม่ redirect ก่อน ให้ตั้งข้อความเตือนก่อน
-        setMessage('คุณยังไม่มีสิทธิ์เข้าถึง');
+        setMessage('คุณไม่มีสิทธิ์เข้าถึงหน้านี้ กรุณาติดต่อผู้ดูแลระบบ');
       }
     } catch (err) {
-      // ✅ อ่าน message จาก response API
-      const msg = err.response?.data?.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ';
-      setError(msg); // ✅ ตั้ง error ที่จะแสดงใน UI
+      console.error(err);
+      const msg = err.response?.data?.message || err.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ โปรดลองอีกครั้ง';
+      setMessage(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow w-80">
-        <h1 className="text-xl font-bold mb-4 text-amber-700 text-center">Login</h1>
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-400 to-purple-600 p-4">
+      <div className="absolute inset-0 bg-pattern-light opacity-10"></div>
 
-        <input
-          placeholder="username"
-          className="w-full border p-2 mb-3 rounded"
-          value={form.username}
-          onChange={(e) => setForm({ ...form, username: e.target.value })}
-          required
-        />
-        <input
-          type="password"
-          placeholder="password"
-          className="w-full border p-2 mb-3 rounded"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          required
-        />
+      <div className="relative bg-white p-8 md:p-10 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 hover:scale-105">
+        <div className="text-center mb-8">
+          <div className="flex justify-center items-center mb-4">
+            <FaSignInAlt className="text-blue-600 text-5xl" />
+          </div>
+          <h1 className="text-3xl font-extrabold text-gray-800">เข้าสู่ระบบ</h1>
+          <p className="text-gray-500 mt-2">จัดการบัญชีของคุณอย่างง่ายดาย</p>
+        </div>
 
-        {/* ✅ แสดงข้อความผิดพลาด */}
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-        {message && <p className="text-red-600 text-sm">{message}</p>}
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="relative">
+            <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              placeholder="ชื่อผู้ใช้งาน"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              value={form.username}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+              required
+              autoComplete="username"
+            />
+          </div>
 
-        <button type="submit" className="bg-blue-600 text-white w-full p-2 rounded mt-3">
-          Login
-        </button>
-      </form>
+          <div className="relative">
+            <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="password"
+              placeholder="รหัสผ่าน"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              required
+              autoComplete="current-password"
+            />
+          </div>
+
+          {message && (
+            <p className="text-red-600 text-sm bg-red-50 p-3 rounded-md text-center border border-red-200">
+              {message}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold text-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-60"
+          >
+            {loading ? 'กำลังเข้าสู่ระบบ…' : 'เข้าสู่ระบบ'}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center text-gray-500 text-sm">
+          หากมีปัญหาในการเข้าสู่ระบบ?{' '}
+          <a href="#" className="text-blue-600 hover:underline">
+            ติดต่อผู้ดูแลระบบ
+          </a>
+        </div>
+      </div>
     </div>
   );
 }
