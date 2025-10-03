@@ -32,8 +32,8 @@ export default function UserListPage() {
       verificationFilter === 'all'
         ? true
         : verificationFilter === 'verified'
-        ? !!user.is_verified
-        : !user.is_verified;
+          ? !!user.is_verified
+          : !user.is_verified;
 
     return matchesSearch && matchesVerified;
   });
@@ -98,10 +98,20 @@ export default function UserListPage() {
       sortable: true,
       minWidth: '200px',
       cell: (row) => (
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
-            {row.display_name?.charAt(0).toUpperCase() || '?'}
-          </div>
+        <div className="flex items-center justify-start">
+          {row.photo_url ? (
+            // ✅ ถ้ามีรูป ให้แสดง <img>
+            <img
+              src={row.photo_url}
+              alt={row.display_name}
+              className="w-10 h-10 rounded-full object-cover border mr-3"
+            />
+          ) : (
+            // ❌ ถ้าไม่มีรูป ใช้ตัวอักษรแรกแบบเดิม
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+              {row.display_name?.charAt(0).toUpperCase() || '?'}
+            </div>
+          )}
           <div>
             <div className="font-medium text-gray-900">{row.display_name || 'ไม่ระบุ'}</div>
           </div>
@@ -150,10 +160,10 @@ export default function UserListPage() {
         const genderInfo = {
           0: { text: 'ชาย', color: 'bg-blue-100 text-blue-800', icon: '👨' },
           1: { text: 'หญิง', color: 'bg-pink-100 text-pink-800', icon: '👩' },
-          default: { text: 'ไม่ระบุ', color: 'bg-gray-100 text-gray-800', icon: '👤' }
+          default: { text: 'ไม่ระบุ', color: 'bg-gray-100 text-gray-800' }
         };
         const info = genderInfo[row.gender] || genderInfo.default;
-        
+
         return (
           <span className={`px-3 py-1 rounded-full text-xs font-medium ${info.color} inline-flex items-center space-x-1`}>
             <span>{info.icon}</span>
@@ -186,18 +196,39 @@ export default function UserListPage() {
       center: true,
       cell: (row) => {
         const provider = row.providers || 'unknown';
-        const providerColors = {
-          google: 'bg-red-100 text-red-800',
-          facebook: 'bg-blue-100 text-blue-800',
-          apple: 'bg-gray-100 text-gray-800',
-          unknown: 'bg-yellow-100 text-yellow-800'
-        };
-        
-        return (
-          <span className={`px-2 py-1 rounded-md text-xs font-medium ${providerColors[provider.toLowerCase()] || providerColors.unknown}`}>
-            {provider}
+
+        const renderGoogleText = () => (
+          <span className="flex space-x-[1px] text-xs font-bold items-center">
+            <span style={{ color: '#4285F4' }}>G</span>
+            <span style={{ color: '#EA4335' }}>o</span>
+            <span style={{ color: '#FBBC05' }}>o</span>
+            <span style={{ color: '#4285F4' }}>g</span>
+            <span style={{ color: '#34A853' }}>l</span>
+            <span style={{ color: '#EA4335' }}>e</span>
           </span>
         );
+
+        // ✅ แก้ providerColors ให้ไม่ซ้ำ และใช้สีเหมาะสม
+        const providerColors = {
+          google: 'bg-gray-50 border border-gray-200 shadow-sm', // พื้นหลังอ่อน ให้ตัวอักษรโดดเด่น
+          facebook: 'bg-[#1877F2] text-white font-semibold',     // Facebook สีจริง
+          apple: 'bg-black text-white font-semibold',  
+          manual: 'bg-black text-white font-semibold',         // Apple ดำ
+          unknown: 'bg-white text-gray-800 font-semibold',                 // Fallback
+        };
+
+        // ✅ ใช้ renderGoogleText() ถ้า provider เป็น google
+        return (
+          <span
+            className={`px-2 py-1 rounded-md text-xs font-medium flex items-center justify-center ${providerColors[provider.toLowerCase()] || providerColors.unknown
+              }`}
+          >
+            {provider.toLowerCase() === "google"
+              ? renderGoogleText()
+              : provider.charAt(0).toUpperCase() + provider.slice(1)}
+          </span>
+        );
+
       },
     },
     {
@@ -249,7 +280,7 @@ export default function UserListPage() {
       <Navbar />
       <div className="min-h-screen bg-gray-50">
         <div className="p-6 max-w-7xl mx-auto">
-          
+
 
           {/* Header Section */}
           <div className="mb-8">
@@ -262,77 +293,77 @@ export default function UserListPage() {
                   จัดการและดูรายละเอียดข้อมูลผู้ใช้งานทั้งหมด
                 </p>
               </div>
-              
+
               {/* Search Box and Verification Filter */}
               <div className="flex items-center space-x-4">
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  placeholder="ค้นหาชื่อ, อีเมล, หรือเบอร์โทร..."
-                  className="pl-10 pr-4 py-3 w-72 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  value={filterText}
-                  onChange={(e) => setFilterText(e.target.value)}
-                />
-                {filterText && (
-                  <button
-                    onClick={() => setFilterText('')}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                  </button>
-                )}
-              </div>
-                <div className="flex items-center space-x-3">
-                {/* Filter Dropdown */}
-                <div className="relative">
-                  <label className="sr-only">สถานะการยืนยัน</label>
-                  <div className="relative">
-                    <select
-                      value={verificationFilter}
-                      onChange={(e) => setVerificationFilter(e.target.value)}
-                      className="appearance-none bg-white border border-gray-300 rounded-lg py-2.5 pl-4 pr-10 text-sm font-medium text-gray-700 shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 cursor-pointer min-w-[140px]"
-                    >
-                      <option value="all">🔍 ทั้งหมด</option>
-                      <option value="verified">✅ ยืนยันแล้ว</option>
-                      <option value="unverified">⏳ ยังไม่ยืนยัน</option>
-                    </select>
-                    {/* Custom dropdown arrow */}
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
                   </div>
-                  
-                  {/* Filter indicator badge */}
-                  {verificationFilter !== 'all' && (
-                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <input
+                    type="text"
+                    placeholder="ค้นหาชื่อ, อีเมล, หรือเบอร์โทร..."
+                    className="pl-10 pr-4 py-3 w-72 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    value={filterText}
+                    onChange={(e) => setFilterText(e.target.value)}
+                  />
+                  {filterText && (
+                    <button
+                      onClick={() => setFilterText('')}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    >
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
                   )}
                 </div>
-                {/* Clear Filter Button (แสดงเมื่อมี filter active) */}
-                {(verificationFilter !== 'all' || filterText) && (
-                  <button
-                    onClick={() => {
-                      setVerificationFilter('all');
-                      setFilterText('');
-                    }}
-                    className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 hover:text-gray-700 transition-all duration-200"
-                    title="ล้างตัวกรอง"
-                  >
-                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    ล้างตัวกรอง
-                  </button>
-                )}
-              </div>
+                <div className="flex items-center space-x-3">
+                  {/* Filter Dropdown */}
+                  <div className="relative">
+                    <label className="sr-only">สถานะการยืนยัน</label>
+                    <div className="relative">
+                      <select
+                        value={verificationFilter}
+                        onChange={(e) => setVerificationFilter(e.target.value)}
+                        className="appearance-none bg-white border border-gray-300 rounded-lg py-2.5 pl-4 pr-10 text-sm font-medium text-gray-700 shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 cursor-pointer min-w-[140px]"
+                      >
+                        <option value="all">🔍 ทั้งหมด</option>
+                        <option value="verified">✅ ยืนยันแล้ว</option>
+                        <option value="unverified">⏳ ยังไม่ยืนยัน</option>
+                      </select>
+                      {/* Custom dropdown arrow */}
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Filter indicator badge */}
+                    {verificationFilter !== 'all' && (
+                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+                    )}
+                  </div>
+                  {/* Clear Filter Button (แสดงเมื่อมี filter active) */}
+                  {(verificationFilter !== 'all' || filterText) && (
+                    <button
+                      onClick={() => {
+                        setVerificationFilter('all');
+                        setFilterText('');
+                      }}
+                      className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 hover:text-gray-700 transition-all duration-200"
+                      title="ล้างตัวกรอง"
+                    >
+                      <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      ล้างตัวกรอง
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

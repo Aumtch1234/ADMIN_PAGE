@@ -16,10 +16,11 @@ export const rejectStore = (id, token) =>
 export const postCategory = (formData, token) =>
   API.post('/addcategory', formData, {
     headers: { 
-      'Content-Type': 'application/json',
+      'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${token}`,
     },
   });
+
 
 export const postShop = (formData, token) =>
   API.post('/addmarket', formData, {
