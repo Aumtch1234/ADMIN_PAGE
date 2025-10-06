@@ -13,6 +13,7 @@ import RiderDetails from '../pages/ManageRier/RiderDetails';
 import AddMarketPage from '../pages/admin_mrkets/AddMarketPage';
 import AddCategoryPage from '../pages/admin_mrkets/AddCategory';
 import StoreDetailPage from '../pages/admin_mrkets/StoreDetailPage';
+import TopUpApprovePage from '../pages/topup-approvePage';
 
 export default function AppRoutes() {
   const token = localStorage.getItem('token');
@@ -61,7 +62,7 @@ export default function AppRoutes() {
         />
 
         <Route
-          path="/foods"
+          path="/markets"
           element={
             <ProtectedRoute>
               <StoreListPage />
@@ -109,6 +110,14 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={['m_admin', 'admin']}>
               <ApprovePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/topup-approve"
+          element={
+            <ProtectedRoute allowedRoles={['m_admin', 'admin']}>
+              <TopUpApprovePage />
             </ProtectedRoute>
           }
         />

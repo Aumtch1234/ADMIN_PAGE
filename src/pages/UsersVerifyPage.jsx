@@ -104,6 +104,7 @@ export default function UserListPage() {
             <img
               src={row.photo_url}
               alt={row.display_name}
+              referrerPolicy="no-referrer"
               className="w-10 h-10 rounded-full object-cover border mr-3"
             />
           ) : (
@@ -212,7 +213,7 @@ export default function UserListPage() {
         const providerColors = {
           google: 'bg-gray-50 border border-gray-200 shadow-sm', // พื้นหลังอ่อน ให้ตัวอักษรโดดเด่น
           facebook: 'bg-[#1877F2] text-white font-semibold',     // Facebook สีจริง
-          apple: 'bg-black text-white font-semibold',  
+          apple: 'bg-black text-white font-semibold',
           manual: 'bg-black text-white font-semibold',         // Apple ดำ
           unknown: 'bg-white text-gray-800 font-semibold',                 // Fallback
         };
@@ -274,6 +275,19 @@ export default function UserListPage() {
       <p className="text-sm">ไม่มีผู้ใช้ที่ตรงกับการค้นหาของคุณ</p>
     </div>
   );
+
+  // ✅ ถ้า loading ยัง true → แสดงหน้าโหลด
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+          <p className="mt-6 text-gray-600 text-lg font-medium">กำลังโหลดข้อมูลผู้ใช้งาน...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

@@ -92,7 +92,7 @@ export default function StoreListPage() {
                 onClick={() => navigate("/admin/add-category")}
                 className="px-5 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors duration-200 shadow-sm"
               >
-                ➕ เพิ่มหมวดหมู่
+                  เพิ่มหมวดหมู่
               </button>
               <button
                 onClick={() => navigate("/admin/add-market")}

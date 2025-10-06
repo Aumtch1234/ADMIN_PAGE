@@ -15,7 +15,20 @@ export const rejectStore = (id, token) =>
 
 export const postCategory = (formData, token) =>
   API.post('/addcategory', formData, {
-    headers: { 
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const getCategories = (token) =>
+  API.get('/getcategories', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+export const postFood = (formData, token) =>
+  API.post('/addfood', formData, {
+    headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${token}`,
     },
@@ -24,7 +37,7 @@ export const postCategory = (formData, token) =>
 
 export const postShop = (formData, token) =>
   API.post('/addmarket', formData, {
-    headers: { 
+    headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${token}`,
     },
@@ -49,3 +62,26 @@ export const getAllMarketsAdmin = async (token) => {
     },
   });
 };
+
+export const updateFood = (foodId, formData, token) =>
+  API.patch(`/food/${foodId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const updateMarket = (marketId, formData, token) =>
+  API.patch(`/market/${marketId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+
+// ลบเมนู
+export const deleteFood = (foodId, token) =>
+  API.delete(`/food/${foodId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });

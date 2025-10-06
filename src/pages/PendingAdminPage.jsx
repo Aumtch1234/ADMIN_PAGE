@@ -321,7 +321,7 @@ export default function PendingAdminPage() {
                             </h3>
                             <div className="flex items-center gap-2 mt-1">
                               <Clock className="w-4 h-4 text-gray-400" />
-                              <span className="text-sm text-gray-500">รอการยืนยัน</span>
+                              <span className="text-sm text-gray-500">จัดการได้เลย</span>
                               {hasChanged && (
                                 <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-600 text-xs rounded-full font-medium">
                                   มีการเปลี่ยนแปลง
