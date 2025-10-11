@@ -1,8 +1,8 @@
 import { X, Save, MapPin, Search, Image } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLoadScript } from "@react-google-maps/api";
-import MapWithAdvancedMarker from "../../pages/admin_mrkets/AdvancedMarkerElement";
-import PlaceAutocompleteElement from "../../pages/admin_mrkets/PlaceAutocomplete";
+import MapWithAdvancedMarker from "../../pages/admin_markets/AdvancedMarkerElement";
+import PlaceAutocompleteElement from "../../pages/admin_markets/PlaceAutocomplete";
 
 const libraries = ["places", "marker"];
 

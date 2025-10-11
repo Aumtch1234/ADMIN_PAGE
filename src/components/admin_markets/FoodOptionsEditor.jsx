@@ -1,7 +1,7 @@
 import { Plus, Trash2 } from "lucide-react";
 
 export default function FoodOptionsEditor({ value = [], onChange, disabled }) {
-  const addRow = () => onChange?.([...(value || []), { name: "", extraPrice: "" }]);
+  const addRow = () => onChange?.([...(value || []), { label: "", extraPrice: "" }]);
   const removeRow = (idx) => onChange?.((value || []).filter((_, i) => i !== idx));
   const updateRow = (idx, key, v) =>
     onChange?.((value || []).map((row, i) => (i === idx ? { ...row, [key]: v } : row)));
@@ -31,8 +31,8 @@ export default function FoodOptionsEditor({ value = [], onChange, disabled }) {
                 <input
                   type="text"
                   placeholder="เช่น เพิ่มชีส, ไข่ดาว"
-                  value={row.name}
-                  onChange={(e) => updateRow(idx, "name", e.target.value)}
+                  value={row.label}
+                  onChange={(e) => updateRow(idx, "label", e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   disabled={disabled}
                 />

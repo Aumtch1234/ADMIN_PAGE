@@ -15,7 +15,7 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
   const [imagePreview, setImagePreview] = useState("");
   const [imgError, setImgError] = useState("");
 
-  const [options, setOptions] = useState([{ name: "", extraPrice: "" }]);
+  const [options, setOptions] = useState([{ label: "", extraPrice: "" }]);
   const [selectedCatId, setSelectedCatId] = useState(null);
 
   // --- helpers ---
@@ -26,10 +26,11 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
     }
     if (!Array.isArray(opts)) opts = [];
     return opts.map((o) => ({
-      name: o.name ?? o.optionName ?? "",
+      label: o.label ?? o.name ?? o.optionName ?? "", // ✅ ดึงได้ทั้ง label หรือ name
       extraPrice: String(o.extraPrice ?? o.price ?? 0),
     }));
   };
+
 
   const parseSingleCategoryId = (food) => {
     // รองรับ category_ids เป็น Array หรือ String (JSON/string of ids)
@@ -59,7 +60,7 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
       });
 
       const mappedOptions = parseOptions(selectedFood.options);
-      setOptions(mappedOptions.length ? mappedOptions : [{ name: "", extraPrice: "" }]);
+      setOptions(mappedOptions.length ? mappedOptions : [{ label: "", extraPrice: "" }]);
 
       const presetId = parseSingleCategoryId(selectedFood);
       setSelectedCatId(presetId ?? null);
@@ -110,8 +111,9 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
       setSaving(true);
 
       const normalizedOptions = (options || [])
-        .map((o) => ({ name: (o.name || "").trim(), extraPrice: Number(o.extraPrice) || 0 }))
-        .filter((o) => o.name);
+        .map((o) => ({ label: (o.label || "").trim(), extraPrice: Number(o.extraPrice) || 0 }))
+        .filter((o) => o.label);
+
 
       const fd = new FormData();
       fd.append("food_name", name);

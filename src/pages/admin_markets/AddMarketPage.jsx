@@ -3,7 +3,7 @@ import Navbar from "../../components/Navbar";
 import { postShop } from "../../APIs/MarketAPI";
 import { useLoadScript } from "@react-google-maps/api";
 import MapWithAdvancedMarker from "./AdvancedMarkerElement";
-import PlaceAutocompleteElement from "../admin_mrkets/PlaceAutocomplete";
+import PlaceAutocompleteElement from "../admin_markets/PlaceAutocomplete";
 import { MapPin, Clock, Phone, MapPinned, Image, FileText, Search } from "lucide-react";
 
 const libraries = ["places", "marker"];

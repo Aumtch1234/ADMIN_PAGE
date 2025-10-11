@@ -4,15 +4,15 @@ import AddAdminPage from '../pages/AddAdminPage';
 import DashboardPage from '../pages/DashboardPage';
 import PendingAdminPage from '../pages/PendingAdminPage'; // ✅ เพิ่ม
 import ProtectedRoute from '../components/ProtectedRoute';
-import StoreListPage from '../pages/admin_mrkets/StoreListPage';
+import StoreListPage from '../pages/admin_markets/StoreListPage';
 import ConfigAdminPage from '../pages/ConfigAdminPage';
 import UserListPage from '../pages/UsersVerifyPage';
 import ApprovePage from '../pages/ApprovePage';
 import ManageRider from '../pages/ManageRier/ManageRider';
 import RiderDetails from '../pages/ManageRier/RiderDetails';
-import AddMarketPage from '../pages/admin_mrkets/AddMarketPage';
-import AddCategoryPage from '../pages/admin_mrkets/AddCategory';
-import StoreDetailPage from '../pages/admin_mrkets/StoreDetailPage';
+import AddMarketPage from '../pages/admin_markets/AddMarketPage';
+import AddCategoryPage from '../pages/admin_markets/AddCategory';
+import StoreDetailPage from '../pages/admin_markets/StoreDetailPage';
 import TopUpApprovePage from '../pages/topup-approvePage';
 
 export default function AppRoutes() {
