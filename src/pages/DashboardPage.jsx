@@ -427,7 +427,13 @@ function QuickActions() {
         >
           <FaCheck className="mr-2" /> อนุมัติ
         </Link>
-      </div>
+        <Link
+          to="/complaints"
+          className="flex items-center justify-center py-3 bg-red-600 text-white rounded-xl shadow-md hover:bg-red-700 transition"
+        >
+          <FaUserSlash className="mr-2" /> ดูคำร้องเรียน
+        </Link>
+              </div>
       <p className="mt-6 text-xs text-center text-gray-500">
         * บางลิงก์อาจจำกัดสิทธิ์ตามบทบาทผู้ใช้
       </p>
