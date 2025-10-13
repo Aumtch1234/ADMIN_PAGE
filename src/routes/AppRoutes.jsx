@@ -14,6 +14,7 @@ import AddMarketPage from '../pages/admin_markets/AddMarketPage';
 import AddCategoryPage from '../pages/admin_markets/AddCategory';
 import StoreDetailPage from '../pages/admin_markets/StoreDetailPage';
 import TopUpApprovePage from '../pages/topup-approvePage';
+import ComplaintsPage from "../pages/ComplaintsPage";
 
 export default function AppRoutes() {
   const token = localStorage.getItem('token');
@@ -141,7 +142,11 @@ export default function AppRoutes() {
         />
         
         <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="/complaints" element={<ComplaintsPage />} />
       </Routes>
+
     </BrowserRouter>
+
+    
   );
 }
