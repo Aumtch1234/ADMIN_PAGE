@@ -12,6 +12,7 @@ import {
   FaFilter,
   FaEye,
 } from "react-icons/fa";
+import Navbar from "../components/Navbar";
 
 export default function ComplaintsPage() {
   const [complaints, setComplaints] = useState([]);
@@ -90,6 +91,7 @@ export default function ComplaintsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
+      <Navbar/>
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="bg-white shadow-sm rounded-2xl p-6 mb-6">
