@@ -273,17 +273,39 @@ export default function StoreApprovalPage() {
                   )}
 
 
-                  {/* ปุ่มดูรายละเอียด */}
-                  <button
-                    onClick={() => handleViewDetails(store)}
-                    className="w-full flex items-center justify-center px-4 py-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors duration-200"
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    ดูรายละเอียดเพิ่มเติม
-                  </button>
+                  {/* ✅ ปุ่มอนุมัติ/ปฏิเสธ (แสดงเฉพาะเมื่อยังไม่อนุมัติ) */}
+                  {store.approve === false && (
+                    <div className="flex gap-2 mb-3">
+                      <button
+                        onClick={() => handleApprove(store.market_id)}
+                        className="flex-1 flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors duration-200 font-medium"
+                      >
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        อนุมัติ
+                      </button>
+                      {/* <button
+                        onClick={() => handleReject(store.market_id)}
+                        className="flex-1 flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors duration-200 font-medium"
+                      >
+                        <XCircle className="w-4 h-4 mr-2" />
+                        ปฏิเสธ
+                      </button> */}
+                    </div>
+                  )}
+
+                  {/* ปุ่มดูรายละเอียด (แสดงหลังอนุมัติแล้ว) */}
+                  {store.approve === true && (
+                    <button
+                      onClick={() => handleViewDetails(store)}
+                      className="w-full flex items-center justify-center px-4 py-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors duration-200"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      ดูรายละเอียดเพิ่มเติม
+                    </button>
+                  )}
+                </div>
                 </div>
 
-              </div>
             ))}
           </div>
         </div>
