@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from '../pages/LoginPage';
 import AddAdminPage from '../pages/AddAdminPage';
 import DashboardPage from '../pages/DashboardPage';
-import PendingAdminPage from '../pages/PendingAdminPage'; // ✅ เพิ่ม
+import PendingAdminPage from '../pages/PendingAdminPage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import StoreListPage from '../pages/admin_markets/StoreListPage';
 import ConfigAdminPage from '../pages/ConfigAdminPage';
@@ -17,22 +17,12 @@ import TopUpApprovePage from '../pages/topup-approvePage';
 import ComplaintsPage from "../pages/ComplaintsPage";
 
 export default function AppRoutes() {
-  const token = localStorage.getItem('token');
-
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/login"
-          element={token ? <Navigate to="/dashboard" /> : <LoginPage />}
-        />
+        <Route path="/login" element={<LoginPage />} />
 
-        <Route
-          path="/config-admin"
-          element={
-            <ConfigAdminPage />
-          }
-        />
+        <Route path="/config-admin" element={<ConfigAdminPage />} />
 
         <Route
           path="/add-admin"
@@ -42,7 +32,6 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
 
         <Route
           path="/dashboard"
@@ -106,6 +95,7 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/approve"
           element={
@@ -114,6 +104,7 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/topup-approve"
           element={
@@ -122,7 +113,7 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/riders"
           element={
@@ -131,7 +122,7 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/riders/:riderId"
           element={
@@ -140,13 +131,18 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        
-        <Route path="*" element={<Navigate to="/login" />} />
-        <Route path="/complaints" element={<ComplaintsPage />} />
+
+        <Route
+          path="/complaints"
+          element={
+            <ProtectedRoute allowedRoles={['m_admin', 'admin']}>
+              <ComplaintsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
-
     </BrowserRouter>
-
-    
   );
 }

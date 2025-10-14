@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import { 
-  Home, 
-  UtensilsCrossed, 
-  Users, 
-  Bike, 
-  CheckCircle, 
-  UserPlus, 
+import {
+  Home,
+  UtensilsCrossed,
+  Users,
+  Bike,
+  CheckCircle,
+  UserPlus,
   Clock,
   LogOut,
   Menu,
@@ -102,7 +102,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    window.location.href = '/login';
+    navigate('/login', { replace: true });
   };
 
   const isActivePath = (path) => {
@@ -124,7 +124,7 @@ export default function Navbar() {
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
-          
+
           <div className="flex items-center space-x-2">
             <div className="p-1.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
               {role === 'm_admin' ? (
@@ -164,7 +164,7 @@ export default function Navbar() {
         className={`fixed left-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white z-50 transition-transform duration-300 ease-in-out shadow-2xl
           ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
           w-72`}
-        style={{ 
+        style={{
           top: '56px',
           height: 'calc(100vh - 56px)'
         }}
@@ -184,12 +184,12 @@ export default function Navbar() {
                       to={item.path}
                       onClick={() => setIsOpen(false)}
                       className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 group
-                        ${isActive 
-                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transform scale-105' 
+                        ${isActive
+                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transform scale-105'
                           : 'hover:bg-gray-700 hover:transform hover:translate-x-2'}`}
                     >
-                      <Icon 
-                        size={20} 
+                      <Icon
+                        size={20}
                         className={`${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'} transition-colors`}
                       />
                       <span className={`font-medium ${isActive ? 'text-white' : 'text-gray-300'}`}>
@@ -208,28 +208,27 @@ export default function Navbar() {
                 <button
                   onClick={() => setIsApproveOpen(!isApproveOpen)}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 group
-                    ${isApproveSection() 
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' 
+                    ${isApproveSection()
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
                       : 'hover:bg-gray-700'}`}
                 >
-                  <CheckCircle 
-                    size={20} 
+                  <CheckCircle
+                    size={20}
                     className={`${isApproveSection() ? 'text-white' : 'text-gray-400 group-hover:text-white'} transition-colors`}
                   />
                   <span className={`font-medium flex-1 text-left ${isApproveSection() ? 'text-white' : 'text-gray-300'}`}>
                     การอนุมัติทั้งหมด
                   </span>
-                  <ChevronDown 
-                    size={16} 
+                  <ChevronDown
+                    size={16}
                     className={`transition-transform duration-300 ${isApproveOpen ? 'rotate-180' : ''} ${isApproveSection() ? 'text-white' : 'text-gray-400'}`}
                   />
                 </button>
 
                 {/* Dropdown Menu */}
                 <div
-                  className={`mt-2 ml-4 space-y-1 overflow-hidden transition-all duration-300 ${
-                    isApproveOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                  }`}
+                  className={`mt-2 ml-4 space-y-1 overflow-hidden transition-all duration-300 ${isApproveOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                    }`}
                 >
                   {approveItems.map((item) => {
                     if (!item.show) return null;
@@ -242,12 +241,12 @@ export default function Navbar() {
                         to={item.path}
                         onClick={() => setIsOpen(false)}
                         className={`flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-all duration-200 group
-                          ${isActive 
-                            ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md' 
+                          ${isActive
+                            ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md'
                             : 'hover:bg-gray-700 hover:translate-x-1'}`}
                       >
-                        <Icon 
-                          size={18} 
+                        <Icon
+                          size={18}
                           className={`${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'} transition-colors`}
                         />
                         <span className={`text-sm font-medium ${isActive ? 'text-white' : 'text-gray-300'}`}>
