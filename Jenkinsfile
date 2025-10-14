@@ -39,7 +39,7 @@ pipeline {
       steps {
         echo '🧹 Cleaning old Docker containers...'
         sh '''
-          docker compose -f $DOCKER_COMPOSE down -v || true
+          docker-compose -f $DOCKER_COMPOSE down -v || true
           docker rm -f ${PROJECT_NAME} 2>/dev/null || true
           docker image prune -f
         '''
@@ -50,7 +50,7 @@ pipeline {
       steps {
         echo '🏗️ Building Docker image for frontend...'
         sh '''
-          docker compose -f $DOCKER_COMPOSE build --no-cache
+          docker-compose -f $DOCKER_COMPOSE build --no-cache
           echo "✅ Build completed successfully"
         '''
       }
@@ -60,7 +60,7 @@ pipeline {
       steps {
         echo '🚀 Starting web container...'
         sh '''
-          docker compose -f $DOCKER_COMPOSE up -d
+          docker-compose -f $DOCKER_COMPOSE up -d
           echo "✅ Container started"
           
           echo ""
@@ -94,7 +94,7 @@ pipeline {
     }
     failure {
       echo '❌ Deployment failed!'
-      sh 'docker compose -f $DOCKER_COMPOSE logs --tail=100 || true'
+      sh 'docker-compose -f $DOCKER_COMPOSE logs --tail=100 || true'
     }
     always {
       echo '🧹 Cleaning up sensitive files (.env)...'
