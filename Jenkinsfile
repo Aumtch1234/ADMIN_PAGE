@@ -13,7 +13,7 @@ pipeline {
     stage('Checkout') {
         steps {
             echo '📥 Pulling latest code from GitHub...'
-            git branch: 'main', url: 'https://github.com/Aumtch1234/WEB_Delivery.git'
+            git branch: 'main', url: 'https://github.com/Aumtch1234/ADMIN_PAGE.git'
             sh 'git log --oneline -1'
         }
     }
