@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:4000/admin', // Base URL ของ admin
+  baseURL: 'http://20.189.96.19:4000/admin', // Base URL ของ admin
 });
 
 // Interceptor ตรวจจับ 401
