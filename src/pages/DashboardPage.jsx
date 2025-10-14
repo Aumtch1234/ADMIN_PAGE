@@ -41,10 +41,10 @@ function DashboardPage() {
   const fetchGpSummary = async () => {
     try {
       const [today, week, month, year] = await Promise.all([
-        axios.get("http://localhost:4000/client/categories/gp_riderrequired/today"),
-        axios.get("http://localhost:4000/client/categories/gp_riderrequired/week"),
-        axios.get("http://localhost:4000/client/categories/gp_riderrequired/month"),
-        axios.get("http://localhost:4000/client/categories/gp_riderrequired/year"),
+        axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/today"),
+        axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/week"),
+        axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/month"),
+        axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/year"),
       ]);
       setGpSummary({
         today: today.data.data.total_gp,
@@ -229,9 +229,9 @@ function GpChartsCard({ gpSummary, loading }) {
     const fetchCharts = async () => {
       try {
         const [weekRes, monthRes, yearRes] = await Promise.all([
-          axios.get("http://localhost:4000/client/categories/gp_riderrequired/weekly"),
-          axios.get("http://localhost:4000/client/categories/gp_riderrequired/monthly"),
-          axios.get("http://localhost:4000/client/categories/gp_riderrequired/yearly"),
+          axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/weekly"),
+          axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/monthly"),
+          axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/yearly"),
         ]);
 
         setCharts({
