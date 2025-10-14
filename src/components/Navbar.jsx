@@ -54,7 +54,7 @@ export default function Navbar() {
       show: true
     },
     {
-      title: 'จัดการคำร้องขอ',
+      title: 'จัดการคำร้องเรียน',
       path: '/complaints',
       icon: MdManageHistory,
       show: true
