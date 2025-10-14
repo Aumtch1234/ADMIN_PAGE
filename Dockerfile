@@ -18,11 +18,14 @@ FROM nginx:alpine
 # Set working directory
 WORKDIR /usr/share/nginx/html
 
+# Remove default nginx config
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy custom nginx config for SPA routing
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copy built files from builder
 COPY --from=builder /app/dist ./
-
-# Optional: custom nginx config (for React SPA)
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
