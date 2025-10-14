@@ -26,7 +26,7 @@ export default function ComplaintsPage() {
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/client/complaints");
+        const res = await axios.get("http://20.189.96.19:4000/client/complaints");
         setComplaints(res.data || []);
       } catch (err) {
         console.error("❌ Failed to fetch complaints", err);
@@ -62,7 +62,7 @@ export default function ComplaintsPage() {
 
   const handleStatusChange = async (complaintId, newStatus) => {
     try {
-      await axios.patch(`http://localhost:4000/client/complaints/${complaintId}`, {
+      await axios.patch(`http://20.189.96.19:4000/client/complaints/${complaintId}`, {
         status: newStatus
       });
       
@@ -324,7 +324,7 @@ export default function ComplaintsPage() {
                           {c.evidence_url ? (
                             <button
                               onClick={() =>
-                                setSelectedImage(`http://localhost:4000${c.evidence_url}`)
+                                setSelectedImage(`http://20.189.96.19:4000${c.evidence_url}`)
                               }
                               className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm"
                             >
@@ -471,10 +471,10 @@ export default function ComplaintsPage() {
                   <h4 className="text-sm font-semibold text-gray-500 uppercase mb-2">หลักฐาน</h4>
                   <div className="bg-gray-50 rounded-lg p-4">
                     <img
-                      src={`http://localhost:4000${selectedComplaint.evidence_url}`}
+                      src={`http://20.189.96.19:4000${selectedComplaint.evidence_url}`}
                       alt="หลักฐาน"
                       className="max-w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                      onClick={() => setSelectedImage(`http://localhost:4000${selectedComplaint.evidence_url}`)}
+                      onClick={() => setSelectedImage(`http://20.189.96.19:4000${selectedComplaint.evidence_url}`)}
                     />
                     <p className="text-sm text-gray-500 mt-2 text-center">
                       คลิกที่รูปเพื่อขยาย
