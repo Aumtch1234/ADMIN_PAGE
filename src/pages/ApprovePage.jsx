@@ -76,22 +76,22 @@ export default function StoreApprovalPage() {
     }
   };
 
-  const handleReject = async (marketId) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await rejectStore(marketId, token);
-      console.log('Reject response:', response.data);
+  // const handleReject = async (marketId) => {
+  //   try {
+  //     const token = localStorage.getItem('token');
+  //     const response = await rejectStore(marketId, token);
+  //     console.log('Reject response:', response.data);
 
-      setStores(stores.map(s =>
-        s.market_id === marketId ? { ...s, approve: false } : s
-      ));
+  //     setStores(stores.map(s =>
+  //       s.market_id === marketId ? { ...s, approve: false } : s
+  //     ));
 
-      alert('ปฏิเสธร้านค้าเรียบร้อยแล้ว');
-    } catch (err) {
-      console.error('Error rejecting store:', err);
-      alert('เกิดข้อผิดพลาดในการปฏิเสธร้านค้า: ' + (err.response?.data?.message || err.message));
-    }
-  };
+  //     alert('ปฏิเสธร้านค้าเรียบร้อยแล้ว');
+  //   } catch (err) {
+  //     console.error('Error rejecting store:', err);
+  //     alert('เกิดข้อผิดพลาดในการปฏิเสธร้านค้า: ' + (err.response?.data?.message || err.message));
+  //   }
+  // };
 
   const getStatusBadge = (approve) => {
     if (approve === true) {

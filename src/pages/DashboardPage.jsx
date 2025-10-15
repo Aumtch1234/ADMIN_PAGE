@@ -24,6 +24,7 @@ import {
   FaMoneyBillWave,
 } from "react-icons/fa";
 import axios from "axios";
+import API from "../APIs/midleware";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -41,10 +42,10 @@ function DashboardPage() {
   const fetchGpSummary = async () => {
     try {
       const [today, week, month, year] = await Promise.all([
-        axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/today"),
-        axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/week"),
-        axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/month"),
-        axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/year"),
+        axios.get(`${API.BASES.pasin}/client/categories/gp_riderrequired/today`),
+        axios.get(`${API.BASES.pasin}/client/categories/gp_riderrequired/week`),
+        axios.get(`${API.BASES.pasin}/client/categories/gp_riderrequired/month`),
+        axios.get(`${API.BASES.pasin}/client/categories/gp_riderrequired/year`),
       ]);
       setGpSummary({
         today: today.data.data.total_gp,
@@ -229,9 +230,9 @@ function GpChartsCard({ gpSummary, loading }) {
     const fetchCharts = async () => {
       try {
         const [weekRes, monthRes, yearRes] = await Promise.all([
-          axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/weekly"),
-          axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/monthly"),
-          axios.get("http://20.189.96.19:4000/client/categories/gp_riderrequired/yearly"),
+          axios.get(`${API.BASES.pasin}/client/categories/gp_riderrequired/weekly`),
+          axios.get(`${API.BASES.pasin}/client/categories/gp_riderrequired/monthly`),
+          axios.get(`${API.BASES.pasin}/client/categories/gp_riderrequired/yearly`),
         ]);
 
         setCharts({

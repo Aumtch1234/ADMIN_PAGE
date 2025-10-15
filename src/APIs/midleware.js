@@ -5,6 +5,23 @@ const API = axios.create({
   baseURL: 'http://20.189.96.19:4000/admin', // Base URL ของ admin
 });
 
+API.BASES = {
+  pasin: 'http://20.189.96.19:4000',
+};
+
+// Interceptor ตรวจจับ 401
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      alert('Session หมดอายุ กรุณาเข้าสู่ระบบใหม่');
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Interceptor ตรวจจับ 401
 API.interceptors.response.use(
   (response) => response,

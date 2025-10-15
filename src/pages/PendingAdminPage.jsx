@@ -63,7 +63,12 @@ export default function PendingAdminPage() {
         const id = admin.id;
         const chosenRole = selectedRoles[id] ?? admin.role;
 
-        await verifyAdmin(id, token, chosenRole);
+        const res = await verifyAdmin(id, token, chosenRole);
+
+        // ✅ ถ้ามีข้อความแจ้งเตือนจาก backend ให้โยนเป็น error ออกมาเลย
+        if (res.data && res.data.message && res.status !== 200) {
+          throw new Error(res.data.message);
+        }
       }
 
       setAdmins((prev) =>
@@ -85,9 +90,16 @@ export default function PendingAdminPage() {
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (err) {
       setIsProcessing(false);
-      alert('เกิดข้อผิดพลาดระหว่างการยืนยัน');
+
+      // ✅ ดึงข้อความจาก backend ถ้ามี
+      const errorMsg =
+        err.response?.data?.message || err.message || 'เกิดข้อผิดพลาดระหว่างการยืนยัน';
+
+      // ✅ ใช้ alert หรือ popup สวย ๆ ก็ได้ เช่น toast หรือ sweetalert2
+      alert(errorMsg);
     }
   };
+
 
   const getRoleBadge = (roleType) => {
     const badges = {
