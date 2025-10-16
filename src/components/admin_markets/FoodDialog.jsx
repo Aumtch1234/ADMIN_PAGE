@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { X, Save, ImagePlus, Trash2 } from "lucide-react";
-import { postFood, updateFood } from "../../APIs/MarketAPI"; // ⬅️ เพิ่ม updateFood
+import { X, Save, ImagePlus, Trash2, Eye, EyeOff } from "lucide-react";
+import { postFood, toggleFoodVisibility, updateFood } from "../../APIs/MarketAPI";
 import FoodOptionsEditor from "./FoodOptionsEditor";
 import CategoryPicker from "./CategoryPicker";
 
-export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClose, onSaved }) {
+export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClose, onSaved, onRefresh, showToast }) {
   const isOpen = !!open;
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -18,6 +18,9 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
   const [options, setOptions] = useState([{ label: "", extraPrice: "" }]);
   const [selectedCatId, setSelectedCatId] = useState(null);
 
+  // ✨ เพิ่ม state สำหรับการแสดง/ซ่อนเมนู
+  const [isVisible, setIsVisible] = useState(true);
+
   // --- helpers ---
   const parseOptions = (raw) => {
     let opts = raw ?? [];
@@ -26,26 +29,50 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
     }
     if (!Array.isArray(opts)) opts = [];
     return opts.map((o) => ({
-      label: o.label ?? o.name ?? o.optionName ?? "", // ✅ ดึงได้ทั้ง label หรือ name
+      label: o.label ?? o.name ?? o.optionName ?? "",
       extraPrice: String(o.extraPrice ?? o.price ?? 0),
     }));
   };
 
-
   const parseSingleCategoryId = (food) => {
-    // รองรับ category_ids เป็น Array หรือ String (JSON/string of ids)
     if (Array.isArray(food?.category_ids) && food.category_ids.length > 0) return food.category_ids[0];
     if (typeof food?.category_ids === "string" && food.category_ids.trim() !== "") {
       try {
         const arr = JSON.parse(food.category_ids);
         if (Array.isArray(arr) && arr.length) return arr[0];
       } catch {
-        // อาจเป็น "3,5" => เอาตัวแรก
         const first = food.category_ids.split(",")[0].trim();
         if (first) return Number(first) || first;
       }
     }
     return food?.category_id ?? null;
+  };
+
+  // ✅ แก้ไข: ใช้ onRefresh แทน window.location.reload()
+  const handleToggleVisibility = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const newValue = !isVisible;
+      setIsVisible(newValue); // เปลี่ยนใน UI ทันที
+
+      await toggleFoodVisibility(selectedFood.food_id, { is_visible: newValue }, token);
+
+      console.log(`✅ อัปเดตสถานะเมนูเป็น ${newValue ? 'แสดง' : 'ซ่อน'}`);
+      
+      // ✅ รีเฟรชข้อมูลแทน reload ทั้งหน้า
+      if (typeof onRefresh === 'function') {
+        await onRefresh();
+      }
+      if (typeof showToast === 'function') {
+        showToast(`🎉 อัปเดตสถานะเมนูสำเร็จ`, "success");
+      }
+    } catch (error) {
+      console.error("❌ toggleFoodVisibility failed:", error);
+      setIsVisible(!isVisible); // คืนค่า UI กลับ
+      if (typeof showToast === 'function') {
+        showToast("❌ อัปเดตสถานะไม่สำเร็จ", "error");
+      }
+    }
   };
 
   // init / prefill (edit mode)
@@ -65,14 +92,17 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
       const presetId = parseSingleCategoryId(selectedFood);
       setSelectedCatId(presetId ?? null);
 
-      // อย่าตั้ง imagePreview จาก URL ตรง ๆ — ใช้จาก form.image_url ใน <img> อยู่แล้ว
+      // ✨ ดึงสถานะ is_visible จาก selectedFood (default = true)
+      setIsVisible(selectedFood.is_visible !== false);
+
       setImageFile(null);
       setImagePreview("");
       setImgError("");
     } else {
       setForm({ food_name: "", price: "", image_url: "" });
-      setOptions([{ name: "", extraPrice: "" }]);
+      setOptions([{ label: "", extraPrice: "" }]);
       setSelectedCatId(null);
+      setIsVisible(true); // เมนูใหม่ default = แสดง
       setImageFile(null);
       setImagePreview("");
       setImgError("");
@@ -98,6 +128,7 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
 
   const handleClose = () => { if (!saving) onClose?.(); };
 
+  // ✅ แก้ไข: เพิ่ม onRefresh ในการบันทึก
   const handleSave = async (e) => {
     e?.preventDefault?.();
     if (saving) return;
@@ -114,26 +145,31 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
         .map((o) => ({ label: (o.label || "").trim(), extraPrice: Number(o.extraPrice) || 0 }))
         .filter((o) => o.label);
 
-
       const fd = new FormData();
       fd.append("food_name", name);
       fd.append("price", priceNum.toString());
-      fd.append("market_id", String(marketId)); // ให้ backend มี context เสมอ
+      fd.append("market_id", String(marketId));
       if (imageFile) fd.append("image", imageFile);
       fd.append("options", JSON.stringify(normalizedOptions));
-      if (selectedCatId != null) fd.append("category_id", String(Number(selectedCatId))); // ✅ int เดี่ยว
+      if (selectedCatId != null) fd.append("category_id", String(Number(selectedCatId)));
 
+      // ✨ เพิ่ม is_visible เข้าไปใน FormData
+      fd.append("is_visible", isVisible.toString());
 
       let resp;
       if (isEdit && selectedFood?.food_id) {
-        // 🔧 โหมดแก้ไข
         resp = await updateFood(selectedFood.food_id, fd, token);
       } else {
-        // ➕ โหมดเพิ่ม
         resp = await postFood(fd, token);
       }
 
       const food = resp?.data?.food ?? resp?.data?.data ?? null;
+      
+      // ✅ แก้ไข: รีเฟรชข้อมูลหลังบันทึกสำเร็จ
+      if (typeof onRefresh === 'function') {
+        await onRefresh();
+      }
+      
       onSaved?.(food);
     } catch (err) {
       console.error("เพิ่ม/บันทึกเมนูไม่สำเร็จ:", err);
@@ -153,7 +189,7 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
         className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
           <h3 className="text-2xl font-bold text-gray-800">{isEdit ? "แก้ไขเมนูอาหาร" : "เพิ่มเมนูอาหารใหม่"}</h3>
           <button type="button" onClick={handleClose} className="text-gray-400 hover:text-gray-600 transition-colors" disabled={saving}>
             <X className="w-6 h-6" />
@@ -186,6 +222,60 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
               disabled={saving}
             />
           </div>
+
+          {/* ✨ การแสดงเมนู Toggle (เฉพาะตอนแก้ไข) */}
+          {isEdit && (
+            <div className={`rounded-xl p-4 border-2 transition-all ${isVisible
+              ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200'
+              : 'bg-gradient-to-r from-red-50 to-orange-50 border-red-200'
+              }`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {isVisible ? (
+                    <div className="bg-green-500 p-2 rounded-lg">
+                      <Eye className="w-5 h-5 text-white" />
+                    </div>
+                  ) : (
+                    <div className="bg-red-500 p-2 rounded-lg">
+                      <EyeOff className="w-5 h-5 text-white" />
+                    </div>
+                  )}
+                  <div>
+                    <div className="font-semibold text-gray-800">สถานะการแสดงเมนู</div>
+                    <div className="text-sm text-gray-600 mt-0.5">
+                      {isVisible
+                        ? "เมนูนี้จะแสดงในแอปพลิเคชัน"
+                        : "เมนูนี้ถูกซ่อน (ลูกค้าจะมองไม่เห็น)"}
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleToggleVisibility}
+                  className={`relative w-16 h-8 rounded-full transition-all duration-300 ${isVisible ? 'bg-green-500' : 'bg-red-500'
+                    }`}
+                >
+                  <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-lg transition-transform duration-300 ${isVisible ? 'translate-x-8' : 'translate-x-0'
+                    }`}></div>
+                </button>
+              </div>
+
+              <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <span className="text-blue-600 text-lg">💡</span>
+                  <div className="text-xs text-blue-800">
+                    <div className="font-semibold mb-1">เมื่อไหร่ควรซ่อนเมนู?</div>
+                    <ul className="space-y-1 list-disc list-inside text-blue-700">
+                      <li>วัตถุดิบหมดชั่วคราว</li>
+                      <li>ต้องการหยุดขายโดยไม่ลบเมนู</li>
+                      <li>กำลังปรับปรุงสูตรอาหาร</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* ตัวเลือกเสริม */}
           <FoodOptionsEditor value={options} onChange={setOptions} disabled={saving} />
@@ -220,7 +310,7 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
             )}
           </div>
 
-          {/* หมวดหมู่ (เลือกได้ 1 อัน) */}
+          {/* หมวดหมู่ */}
           <CategoryPicker
             isOpen={isOpen}
             token={token}
@@ -247,7 +337,7 @@ export default function FoodDialog({ open, isEdit, selectedFood, marketId, onClo
             disabled={saving}
           >
             <Save className="w-4 h-4" />
-            {isEdit ? "บันทึก" : "เพิ่มเมนู"}
+            {saving ? "กำลังบันทึก..." : (isEdit ? "บันทึก" : "เพิ่มเมนู")}
           </button>
         </div>
       </form>

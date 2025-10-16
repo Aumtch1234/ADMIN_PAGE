@@ -33,7 +33,23 @@ export const postFood = (formData, token) =>
       Authorization: `Bearer ${token}`,
     },
   });
+// ✅ แก้ไข: Toggle สถานะเปิด/ปิดร้าน (ต้องอยู่ในโหมด Manual)
+export const ToggleStoreStatus = (marketId, data, token) =>
+  API.put(`/markets/${marketId}/toggle-status`, data, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
+// ✅ แก้ไข: เปลี่ยนโหมด Auto/Manual
+export const IsManualMarket = (marketId, data, token) =>
+  API.put(`/markets/${marketId}/manual-override`, data, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
 export const postShop = (formData, token) =>
   API.post('/addmarket', formData, {
@@ -53,6 +69,16 @@ export const getFoodsWithMarket = (marketId, token) =>
   API.get(`/foods/market/${marketId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+
+// ✅ แก้ไข: เปิด/ปิดการแสดงเมนูอาหาร
+export const toggleFoodVisibility = (foodId, data, token) =>
+  API.put(`/foods/${foodId}/visibility`, data, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
 
 // ดึงร้านค้าแอดทั้งหมด
 export const getAllMarketsAdmin = async (token) => {
